@@ -5,7 +5,7 @@
 
 
 # Required Steps for a Passing Submission:
-1. Extract features and train an SVM model on new objects (see `pick_list_*.yaml` in `/pr2_robot/config/` for the list of models you'll be trying to identify). 
+1. Extract features and train an SVM model on new objects (see `pick_list_*.yaml` in `/pr2_robot/config/` for the list of models you'll be trying to identify).
 2. Write a ROS node and subscribe to `/pr2/world/points` topic. This topic contains noisy point cloud data that you must work with.
 3. Use filtering and RANSAC plane fitting to isolate the objects of interest from the rest of the scene.
 4. Apply Euclidean clustering to create separate clusters for individual items.
@@ -36,8 +36,25 @@ You're reading it!
 
 ### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
+In this exercise several filters where introduced. Starting with a voxel filter, a pass through filter and an outlier filter, while the latter was not applied since the provided image did not contain any noise. Additionally the RANSAC plane fitting was applied. The application parameters were chosen by trial and error.
+For the voxel filter a leave size of 0.01 were chosen and resulted in a downsampling as shown in the following figure.
+![Voxel](Images/Voxel.png)
+The pass through filter depends on a filter axis. In this case the z axis in an interval between 0.6 and 1.1 was chosen. This results in a pointcloud of table and objects as shown in the following figure.
+![Passthrough](Images/E1_passthrough.png)
+The extracting index for RANSAC plane fitting was set to 0.01 resulting in outliers(objects) and inliers(table) as shown in the following two figures.
+![outlier](Images/E1_outlier.png)
+
+![inlier](Images/E1_inlier.png)
+
 
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
+In exercise 2 the steps above where included in a ros node and extended by a cluster segmentation. For the cluster segmentation a tolerance of 0.02, a minimal cluster size of 200 and a maximal cluster size of 25000 were chosen. The code can be reviewed in Exercise2/segmentation.py.
+The resulting outlier, inlier and cluster are shown in the following figures.
+![outlier](Images/E2_Objects.png)
+
+![inlier](Images/E2_Table.png)
+
+![cluster](Images/E2_Cluster.png)
 
 #### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
 Here is an example of how to include an image in your writeup.
@@ -48,10 +65,7 @@ Here is an example of how to include an image in your writeup.
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
 
-And here's another image! 
+And here's another image!
 ![demo-2](https://user-images.githubusercontent.com/20687560/28748286-9f65680e-7468-11e7-83dc-f1a32380b89c.png)
 
 Spend some time at the end to discuss your code, what techniques you used, what worked and why, where the implementation might fail and how you might improve it if you were going to pursue this project further.  
-
-
-
